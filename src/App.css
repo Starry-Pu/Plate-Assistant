@@ -1,0 +1,283 @@
+/* =========================================
+   1. 基础设置 (覆盖默认样式)
+   ========================================= */
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+/* ⚠️ 关键：重置 #root，让它占满全屏，不要居中 */
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left; /* 覆盖默认的 center */
+  max-width: none;  /* 覆盖默认的 1280px */
+}
+
+/* 全局重置 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #f3f4f6;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden; /* 防止出现双重滚动条 */
+}
+
+/* =========================================
+   2. 布局框架
+   ========================================= */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+}
+
+/* 顶部导航 */
+.header {
+  background: white;
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e5e7eb;
+  flex-shrink: 0; /* 防止被挤压 */
+}
+
+.header h1 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* 按钮组 */
+.btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  margin-left: 12px;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+.btn-primary { background: #3b82f6; color: white; }
+.btn-primary:hover { background: #2563eb; }
+.btn-outline { background: white; border: 1px solid #d1d5db; color: #374151; }
+.btn-outline:hover { background: #f9fafb; border-color: #9ca3af; }
+
+/* 规格选择工具条 */
+.toolbar {
+  background: white;
+  padding: 12px 0;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+.seg-btn {
+  padding: 6px 20px;
+  border: 1px solid #d1d5db;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+  color: #4b5563;
+}
+.seg-btn:first-of-type { border-radius: 6px 0 0 6px; }
+.seg-btn:last-of-type { border-radius: 0 6px 6px 0; }
+.seg-btn:not(:first-of-type) { border-left: none; } /* 去除重叠边框 */
+.seg-btn.active {
+  background: #eff6ff;
+  color: #3b82f6;
+  border-color: #3b82f6;
+  font-weight: 600;
+  position: relative; /* 保证选中框盖住旁边的边框 */
+  z-index: 1;
+}
+
+/* =========================================
+   3. 核心画布区域
+   ========================================= */
+.main-area {
+  flex: 1;
+  overflow: hidden; /* 防止整个页面滚动 */
+  display: flex;
+  justify-content: center;
+  background: #f9fafb;
+  position: relative;
+}
+
+.canvas-wrapper {
+  padding: 40px;
+  overflow: auto; /* 只让画布区域内部滚动 */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* ⭐ 让孔板水平居中 */
+  /* justify-content: center;  <-- 如果你想让它垂直也居中，可以加这行，但如果不加，它会靠上一点，也很好看 */
+}
+
+/* --- 孔板网格容器 --- */
+.plate-grid {
+  display: grid;
+  gap: 6px; /* 孔与孔之间的间距 */
+  padding: 24px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+  user-select: none;
+  
+  /* ⭐⭐⭐ 修复行间距过大的关键代码 ⭐⭐⭐ */
+  align-content: start; 
+  height: fit-content;
+  /* ------------------------------------- */
+}
+
+/* =========================================
+   4. 孔位样式 (圆圈)
+   ========================================= */
+.well {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.1s, border-color 0.1s;
+  background-color: #fff;
+}
+
+.well:hover {
+  transform: scale(1.1);
+  border-color: #9ca3af;
+  z-index: 10; /* 悬浮时浮起来 */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 正在框选时的临时样式 (虚线框) */
+.well.temp-selected {
+  transform: scale(0.9);
+  border: 2px dashed #3b82f6;
+  background-color: #dbeafe !important;
+}
+
+/* 孔内文字 */
+.well-text {
+  font-size: 11px;
+  font-weight: 500;
+  pointer-events: none;
+  text-align: center;
+  line-height: 1;
+  overflow: hidden;
+  max-width: 36px;
+  white-space: nowrap;
+  text-overflow: ellipsis; /* 文字太长显示省略号 */
+}
+
+/* =========================================
+   5. 弹窗样式 (Modal)
+   ========================================= */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.modal-content {
+  background: white;
+  padding: 24px;
+  border-radius: 16px;
+  width: 320px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalPop {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal-content h3 {
+  margin-bottom: 8px;
+  font-size: 18px;
+  color: #111827;
+}
+
+.modal-desc {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 6px;
+}
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+.form-group input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* 颜色选择器 */
+.color-palette {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.color-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 0 0 1px #e5e7eb;
+  transition: transform 0.1s;
+}
+.color-dot:hover {
+  transform: scale(1.1);
+}
+.color-dot.active {
+  box-shadow: 0 0 0 2px #1f2937; /* 选中时加黑圈 */
+  transform: scale(1.15);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}

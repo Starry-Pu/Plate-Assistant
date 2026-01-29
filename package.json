@@ -1,0 +1,8 @@
+{
+  "name": "Well Plate", 
+  "private": false, 
+  "version": "1.0.0", 
+  "description": "A simple tool for designing laboratory well plates.",
+  "author": "PuStarry"
+
+}
