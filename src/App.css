@@ -1,153 +1,69 @@
 /* =========================================
-   1. 基础设置 (覆盖默认样式)
+   1. 基础设置
    ========================================= */
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-}
+:root { font-family: Inter, system-ui, sans-serif; }
+#root { width: 100%; height: 100%; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background-color: #f3f4f6; height: 100vh; width: 100vw; overflow: hidden; }
 
-/* ⚠️ 关键：重置 #root，让它占满全屏，不要居中 */
-#root {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  text-align: left; /* 覆盖默认的 center */
-  max-width: none;  /* 覆盖默认的 1280px */
-}
+.app-container { display: flex; flex-direction: column; height: 100vh; width: 100%; }
 
-/* 全局重置 */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* Header & Toolbar */
+.header { background: white; padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e5e7eb; flex-shrink: 0; }
+.header h1 { font-size: 16px; font-weight: 600; color: #1f2937; }
 
-body {
-  background-color: #f3f4f6;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden; /* 防止出现双重滚动条 */
-}
-
-/* =========================================
-   2. 布局框架
-   ========================================= */
-.app-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 100%;
-}
-
-/* 顶部导航 */
-.header {
-  background: white;
-  padding: 0 24px;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid #e5e7eb;
-  flex-shrink: 0; /* 防止被挤压 */
-}
-
-.header h1 {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1f2937;
-}
-
-/* 按钮组 */
-.btn {
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 14px;
-  cursor: pointer;
-  border: none;
-  margin-left: 12px;
-  transition: all 0.2s;
-  font-weight: 500;
-}
+.btn { padding: 8px 16px; border-radius: 6px; font-size: 14px; cursor: pointer; border: none; font-weight: 500; transition: all 0.2s; }
 .btn-primary { background: #3b82f6; color: white; }
 .btn-primary:hover { background: #2563eb; }
 .btn-outline { background: white; border: 1px solid #d1d5db; color: #374151; }
-.btn-outline:hover { background: #f9fafb; border-color: #9ca3af; }
+.btn-danger-outline { background: white; border: 1px solid #fecaca; color: #ef4444; }
+.btn-danger-outline:hover { background: #fef2f2; border-color: #ef4444; }
 
-/* 规格选择工具条 */
-.toolbar {
+/* 头部右侧操作区 */
+.header-actions { display: flex; align-items: center; gap: 15px; }
+.checkbox-label { display: flex; align-items: center; gap: 6px; font-size: 14px; color: #4b5563; cursor: pointer; user-select: none; }
+.checkbox-label input { width: 16px; height: 16px; cursor: pointer; accent-color: #3b82f6; }
+
+.toolbar { background: white; padding: 10px 0; display: flex; justify-content: center; gap: 10px; border-bottom: 1px solid #e5e7eb; flex-shrink: 0; }
+.seg-btn { padding: 6px 18px; border: 1px solid #d1d5db; background: white; cursor: pointer; }
+.seg-btn:first-child { border-radius: 6px 0 0 6px; }
+.seg-btn:last-child { border-radius: 0 6px 6px 0; }
+.seg-btn.active { background: #eff6ff; color: #3b82f6; border-color: #3b82f6; font-weight: bold; z-index: 1; }
+
+/* 主区域布局 */
+.main-area { flex: 1; display: flex; overflow: hidden; background: #f9fafb; }
+
+/* 左侧：画布 */
+.canvas-wrapper { flex: 1; padding: 40px; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding-top: 40px; }
+
+/* --- 板子容器 --- */
+.plate-card {
   background: white;
-  padding: 12px 0;
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  border-bottom: 1px solid #e5e7eb;
-  flex-shrink: 0;
-}
-
-.seg-btn {
-  padding: 6px 20px;
-  border: 1px solid #d1d5db;
-  background: white;
-  cursor: pointer;
-  font-size: 14px;
-  color: #4b5563;
-}
-.seg-btn:first-of-type { border-radius: 6px 0 0 6px; }
-.seg-btn:last-of-type { border-radius: 0 6px 6px 0; }
-.seg-btn:not(:first-of-type) { border-left: none; } /* 去除重叠边框 */
-.seg-btn.active {
-  background: #eff6ff;
-  color: #3b82f6;
-  border-color: #3b82f6;
-  font-weight: 600;
-  position: relative; /* 保证选中框盖住旁边的边框 */
-  z-index: 1;
-}
-
-/* =========================================
-   3. 核心画布区域
-   ========================================= */
-.main-area {
-  flex: 1;
-  overflow: hidden; /* 防止整个页面滚动 */
-  display: flex;
-  justify-content: center;
-  background: #f9fafb;
-  position: relative;
-}
-
-.canvas-wrapper {
-  padding: 40px;
-  overflow: auto; /* 只让画布区域内部滚动 */
-  width: 100%;
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
   display: flex;
   flex-direction: column;
-  align-items: center; /* ⭐ 让孔板水平居中 */
-  /* justify-content: center;  <-- 如果你想让它垂直也居中，可以加这行，但如果不加，它会靠上一点，也很好看 */
+  align-items: center;
+  gap: 15px;
+  
+  /* 宽度自适应 */
+  width: fit-content;
+  min-width: 300px;
+  /* 限制最大宽度，防止图例太宽 */
+  max-width: 1000px; 
 }
 
-/* --- 孔板网格容器 --- */
+.plate-header-info { text-align: center; color: #374151; font-weight: 500; width: 100%; border-bottom: 1px solid #f3f4f6; padding-bottom: 10px;}
+
 .plate-grid {
   display: grid;
-  gap: 6px; /* 孔与孔之间的间距 */
-  padding: 24px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  border: 1px solid #e5e7eb;
+  gap: 6px; 
   user-select: none;
-  
-  /* ⭐⭐⭐ 修复行间距过大的关键代码 ⭐⭐⭐ */
-  align-content: start; 
-  height: fit-content;
-  /* ------------------------------------- */
+  justify-content: center;
 }
 
-/* =========================================
-   4. 孔位样式 (圆圈)
-   ========================================= */
+/* --- 孔位样式 --- */
 .well {
   width: 44px;
   height: 44px;
@@ -157,127 +73,78 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.1s, border-color 0.1s;
+  transition: transform 0.1s;
   background-color: #fff;
 }
+.well:hover { transform: scale(1.1); box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 10; }
+.well.temp-selected { transform: scale(0.9); border: 2px dashed #3b82f6; background-color: #dbeafe !important; }
 
-.well:hover {
-  transform: scale(1.1);
-  border-color: #9ca3af;
-  z-index: 10; /* 悬浮时浮起来 */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.well-text { 
+  font-size: 11px; 
+  font-weight: 600; 
+  pointer-events: none; 
+  white-space: nowrap; 
 }
 
-/* 正在框选时的临时样式 (虚线框) */
-.well.temp-selected {
-  transform: scale(0.9);
-  border: 2px dashed #3b82f6;
-  background-color: #dbeafe !important;
+/* --- ⭐ 新增：内部图例样式 (Export Legend) --- */
+.plate-legend-wrapper {
+  margin-top: 20px;
+  width: 100%;
+  border-top: 2px dashed #f3f4f6;
+  padding-top: 20px;
 }
 
-/* 孔内文字 */
-.well-text {
-  font-size: 11px;
-  font-weight: 500;
-  pointer-events: none;
-  text-align: center;
-  line-height: 1;
-  overflow: hidden;
-  max-width: 36px;
-  white-space: nowrap;
-  text-overflow: ellipsis; /* 文字太长显示省略号 */
+.legend-grid {
+  display: grid;
+  /* 自动适应列数，每列最小200px */
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  width: 100%;
 }
 
-/* =========================================
-   5. 弹窗样式 (Modal)
-   ========================================= */
-.modal-overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+.legend-item {
   display: flex;
   align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  backdrop-filter: blur(2px);
-}
-
-.modal-content {
-  background: white;
-  padding: 24px;
-  border-radius: 16px;
-  width: 320px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-  animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes modalPop {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-.modal-content h3 {
-  margin-bottom: 8px;
-  font-size: 18px;
-  color: #111827;
-}
-
-.modal-desc {
-  font-size: 13px;
-  color: #6b7280;
-  margin-bottom: 20px;
-}
-
-.form-group {
-  margin-bottom: 16px;
-}
-.form-group label {
-  display: block;
-  font-size: 13px;
-  font-weight: 500;
-  color: #374151;
-  margin-bottom: 6px;
-}
-.form-group input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #d1d5db;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
-  outline: none;
-  font-size: 14px;
-  transition: border-color 0.2s;
-}
-.form-group input:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  /* box-shadow: 0 1px 2px rgba(0,0,0,0.02); */
 }
 
-/* 颜色选择器 */
-.color-palette {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.color-dot {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  cursor: pointer;
-  border: 2px solid white;
-  box-shadow: 0 0 0 1px #e5e7eb;
-  transition: transform 0.1s;
-}
-.color-dot:hover {
-  transform: scale(1.1);
-}
-.color-dot.active {
-  box-shadow: 0 0 0 2px #1f2937; /* 选中时加黑圈 */
-  transform: scale(1.15);
-}
+.legend-left { display: flex; align-items: center; gap: 8px; overflow: hidden; }
+.legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.legend-label { font-size: 13px; font-weight: 500; color: #374151; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; }
+.legend-count { font-size: 12px; color: #6b7280; background: #f3f4f6; padding: 2px 6px; border-radius: 4px; flex-shrink: 0; font-family: monospace; }
 
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 24px;
-}
+/* 右侧面板 */
+.side-panel { width: 300px; background: white; border-left: 1px solid #e5e7eb; display: flex; flex-direction: column; z-index: 20; box-shadow: -4px 0 15px rgba(0,0,0,0.02); }
+.panel-header { padding: 20px; border-bottom: 1px solid #f3f4f6; display: flex; justify-content: space-between; align-items: center; }
+.panel-header h3 { font-size: 16px; color: #1f2937; }
+.badge { background: #f3f4f6; padding: 2px 8px; border-radius: 10px; font-size: 12px; color: #6b7280; font-weight: 600; }
+.stats-container { flex: 1; padding: 20px; overflow-y: auto; }
+.empty-state { text-align: center; color: #9ca3af; margin-top: 40px; }
+.stats-list-vertical { display: flex; flex-direction: column; gap: 10px; }
+.stat-row { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #fff; border: 1px solid #f3f4f6; border-radius: 8px; }
+.stat-info { display: flex; align-items: center; gap: 10px; }
+.stat-color-dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); }
+.stat-name { font-size: 14px; font-weight: 500; color: #374151; }
+.stat-count { font-size: 13px; color: #6b7280; font-family: monospace; background: #f3f4f6; padding: 2px 6px; border-radius: 4px; }
+.panel-footer { padding: 20px; border-top: 1px solid #f3f4f6; background: #fafafa; }
+
+/* Modal */
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(2px); }
+.modal-content { background: white; padding: 24px; border-radius: 16px; width: 320px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); animation: pop 0.2s ease-out; }
+@keyframes pop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.modal-content h3 { margin-bottom: 8px; font-size: 18px; color: #111827; }
+.modal-desc { font-size: 13px; color: #6b7280; margin-bottom: 20px; }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 6px; }
+.form-group input { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; outline: none; font-size: 14px; }
+.form-group input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+.color-palette { display: flex; gap: 8px; flex-wrap: wrap; }
+.color-dot { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid white; box-shadow: 0 0 0 1px #e5e7eb; }
+.color-dot:hover { transform: scale(1.1); }
+.color-dot.active { box-shadow: 0 0 0 2px #1f2937; transform: scale(1.15); }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
