@@ -10,7 +10,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "vite preview --port 8080 --host" 
+    "start": "vite preview --port 8080 --host"
   },
   "dependencies": {
     "html2canvas": "^1.4.1",
